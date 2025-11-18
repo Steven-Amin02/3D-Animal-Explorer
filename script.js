@@ -86,7 +86,7 @@ const anatomyData = {
  Cow: {
   overview: {
     title: "Cow System",
-    category: "Muscular System",
+    category: "",
     icon: "🐄",
     description:
       "The bovine muscular system is built for endurance, stability, and powerful movement. Cows possess strong, slow-twitch–dominant muscles that support standing for long periods, walking long distances, and driving heavy body mass.",
