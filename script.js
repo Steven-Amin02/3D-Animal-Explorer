@@ -250,7 +250,7 @@ const anatomyData = {
 // ===============================
 // State Management
 // ===============================
-let modelOverviewShown = { Horse: false, Cow: false, Cat: false }
+let modelOverviewShown = { Horse: false, Cow: false, Cat: false, Turkey: false }
 let currentState = "Horse"
 let viewers = {}
 let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
@@ -345,6 +345,7 @@ function init() {
     Horse: document.getElementById("HorseViewer"),
     Cow: document.getElementById("CowViewer"),
     Cat: document.getElementById("CatViewer"),
+    Turkey: document.getElementById("TurkeyViewer"),
   }
 
   // Hide Cat, Cow, and Horse hotspots by default (will toggle on via button)
@@ -359,6 +360,10 @@ function init() {
   if (viewers.Horse) {
     const horseHotspots = viewers.Horse.querySelectorAll('.Hotspot')
     horseHotspots.forEach(h => h.classList.add('hidden'))
+  }
+  if (viewers.Turkey) {
+    const turkeyHotspots = viewers.Turkey.querySelectorAll('.Hotspot')
+    turkeyHotspots.forEach(h => h.classList.add('hidden'))
   }
 
   // Setup model viewer event listeners with performance tracking
@@ -572,6 +577,9 @@ function handleKeyboardShortcuts(e) {
     case '3':
       switchState('Cat')
       break
+    case '4':
+      switchState('Turkey')
+      break
     case 'r':
     case 'R':
       resetView()
@@ -644,6 +652,8 @@ function switchState(state) {
         viewer.src = "models/Cow.glb"
       } else if (!viewer.src && viewer.id === "CatViewer") {
         viewer.src = "models/Cat.glb"
+      } else if (!viewer.src && viewer.id === "TurkeyViewer") {
+        viewer.src = "models/Turkey.glb"
       }
       if (isAutoRotating) {
         viewer.autoRotate = true

@@ -73,6 +73,13 @@
               <small>Full Cat Body</small>
             </span>
           </button>
+          <button class="menu-item" data-model="Turkey">
+            <span class="menu-item-icon">🦃</span>
+            <span class="menu-item-text">
+              <strong>Turkey</strong>
+              <small>Full Turkey Body</small>
+            </span>
+          </button>
         </div>
       </div>
       <div class="menu-overlay" id="menuOverlay"></div>
@@ -143,6 +150,38 @@
         <button class="Hotspot" slot="hotspot-37" data-position="-0.5559571003786103m -0.27160352074829275m -0.06901879935150046m" data-normal="-0.6525598653644571m -0.18206074061720348m -0.7355402836292769m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Hock Joint</div></button>
         <button class="Hotspot" slot="hotspot-40" data-position="-0.053688303998085884m -0.04929305498328029m -0.11522000967937408m" data-normal="-0.2914575999613685m -0.3845290116052432m -0.8758937758990263m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Elbow Joint</div></button>
         <button class="Hotspot" slot="hotspot-41" data-position="-0.070452002708011m -0.03683637435132351m -0.0916425840367665m" data-normal="-0.6045961964347376m -0.32624004994430417m -0.7266573257519573m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Axilla</div></button>
+      </model-viewer>
+
+      <model-viewer
+        id="TurkeyViewer"
+        class="model-viewer"
+        src="models/Turkey.glb"
+        alt="Turkey Anatomy"
+        camera-controls
+        disable-tap
+        auto-rotate
+        auto-rotate-delay="2000"
+        rotation-per-second="20deg"
+        camera-orbit="0deg 75deg 105%"
+        field-of-view="45deg"
+        min-camera-orbit="auto auto 50%"
+        max-camera-orbit="auto auto 200%"
+        shadow-intensity="0.8"
+        exposure="1"
+        interpolation-decay="200"
+        interaction-prompt="none"
+        touch-action="pan-y"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        loading="lazy"
+      >
+        <div class="loading-overlay" slot="poster">
+          <div class="spinner"></div>
+          <p>Loading Turkey Model...</p>
+          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Path: models/Turkey.glb</p>
+        </div>
+        <!-- Example Turkey hotspot (adjust positions/normals as needed) -->
+        <button class="Hotspot" slot="hotspot-1" data-position="0m 0.2m 0m" data-normal="0 1 0" data-visibility-attribute="visible"><div class="HotspotAnnotation">Beak</div></button>
       </model-viewer>
 
       <model-viewer
