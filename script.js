@@ -285,53 +285,10 @@ function updateInfoCardWithData(data) {
 }
 
 // ===============================
-// Mobile Touch Gestures
+// Mobile Touch Gestures - DISABLED
 // ===============================
-let touchStartX = 0
-let touchStartY = 0
-let touchEndX = 0
-let touchEndY = 0
-
-const modelOrder = ['Horse', 'Cow', 'Cat', 'Turkey']
-let currentModelIndex = 0
-
-function handleSwipeGesture() {
-  const swipeThreshold = 50
-  const diffX = touchEndX - touchStartX
-  const diffY = touchEndY - touchStartY
-
-  // Only process horizontal swipes (ignore vertical)
-  if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > swipeThreshold) {
-    if (diffX > 0) {
-      // Swipe right - previous model
-      currentModelIndex = (currentModelIndex - 1 + modelOrder.length) % modelOrder.length
-    } else {
-      // Swipe left - next model
-      currentModelIndex = (currentModelIndex + 1) % modelOrder.length
-    }
-
-    const nextModel = modelOrder[currentModelIndex]
-    const dockButton = document.querySelector(`.dock-item[data-model="${nextModel}"]`)
-    if (dockButton) {
-      dockButton.click()
-    }
-  }
-}
-
-// Add touch event listeners to canvas area
-const canvasArea = document.querySelector('.canvas-area')
-if (canvasArea) {
-  canvasArea.addEventListener('touchstart', (e) => {
-    touchStartX = e.changedTouches[0].screenX
-    touchStartY = e.changedTouches[0].screenY
-  }, { passive: true })
-
-  canvasArea.addEventListener('touchend', (e) => {
-    touchEndX = e.changedTouches[0].screenX
-    touchEndY = e.changedTouches[0].screenY
-    handleSwipeGesture()
-  }, { passive: true })
-}
+// Swipe gestures disabled to prevent accidental model switching
+// Users should use the dock buttons to switch models
 
 // Prevent pull-to-refresh on mobile
 document.body.addEventListener('touchmove', (e) => {
