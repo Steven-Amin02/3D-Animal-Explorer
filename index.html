@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
   <title>3D Animals Anatomy Explorer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -11,362 +13,492 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
-<body>
-  <!-- Performance hint overlay -->
-  <div class="performance-hint" id="perfHint">
-    <div class="perf-icon">⚡</div>
-    <div class="perf-text">Loading optimized 3D models...</div>
-    <div class="perf-bar"><div class="perf-progress" id="perfProgress"></div></div>
-  </div>
 
-  <!-- Added intro screen overlay -->
-  <div class="intro-screen" id="introScreen">
-    <div class="intro-content">
-      <!-- Text content -->
-      <h1 class="intro-title">Animals Anatomy Explorer</h1>
-      <p class="intro-tagline">Interactive 3D Visualization Platform</p>
-      <p class="intro-description">
-        Explore feline anatomy in stunning 3D detail. Switch between Horse, Cow, and Cat views to understand the complete structure of them.
-      </p>
+<body class="dark-mode">
 
-      <!-- CTA button -->
-      <button class="intro-button" id="startButton">
-        <span>Start Exploring</span>
-        <span class="button-arrow">→</span>
-      </button>
+  <div class="app-container">
 
+    <!-- Intro Screen -->
+    <div class="intro-screen" id="introScreen">
+      <div class="intro-content">
+        <h1 class="intro-title">Anatomy<br>Explorer</h1>
+        <p style="color: #94a3b8; font-size: 18px; margin-bottom: 40px;">Interactive 3D Visualization Platform</p>
+        <button class="intro-btn" id="startButton">Start Experience</button>
+      </div>
     </div>
-  </div>
 
-  <div class="container">
-    <!-- Model Selection Menu -->
-    <nav class="model-menu" id="modelMenu">
-      <button class="menu-toggle-btn" id="menuToggleBtn" aria-label="Toggle model menu">
-        <span class="menu-icon">☰</span>
-        <span class="menu-text">Models</span>
-      </button>
-      
-      <div class="menu-panel" id="menuPanel">
-        <div class="menu-header">
-          <h3>Select Model</h3>
-          <button class="menu-close" id="menuClose" aria-label="Close menu">×</button>
+    <!-- Floating Controls (Top Right) -->
+    <div class="controls-container">
+      <div class="control-group glass">
+        <button class="control-btn" id="themeToggle" title="Toggle Theme">☀️</button>
+        <button class="control-btn" id="arButton" title="View in AR">📱</button>
+      </div>
+
+      <div class="control-group glass">
+        <button class="control-btn" id="zoomIn" title="Zoom In">＋</button>
+        <button class="control-btn" id="zoomOut" title="Zoom Out">－</button>
+        <button class="control-btn" id="resetView" title="Reset View">⟲</button>
+        <button class="control-btn" id="autoRotateToggle" title="Auto Rotate">↻</button>
+        <button class="control-btn" id="hotspotsToggle" title="Toggle Hotspots">●</button>
+      </div>
+    </div>
+
+    <!-- Info Card (Side Panel) -->
+    <div class="info-card glass" id="infoCard">
+      <div class="info-header">
+        <div class="info-icon-large" id="cardIcon">🐎</div>
+        <div class="info-title">
+          <span id="cardCategory">Overview</span>
+          <h2 id="cardTitle">Horse Anatomy</h2>
         </div>
-        <div class="menu-items">
-          <button class="menu-item active" data-model="Horse">
-            <span class="menu-item-icon">🐴</span>
-            <span class="menu-item-text">
-              <strong>Horse</strong>
-              <small>Complete anatomy view</small>
-            </span>
-          </button>
-          <button class="menu-item" data-model="Cow">
-            <span class="menu-item-icon">🐄</span>
-            <span class="menu-item-text">
-              <strong>Cow</strong>
-              <small>Full Cow Body</small>
-            </span>
-          </button>
-          <button class="menu-item" data-model="Cat">
-            <span class="menu-item-icon">🐱</span>
-            <span class="menu-item-text">
-              <strong>Cat</strong>
-              <small>Full Cat Body</small>
-            </span>
-          </button>
-          <button class="menu-item" data-model="Turkey">
-            <span class="menu-item-icon">🦃</span>
-            <span class="menu-item-text">
-              <strong>Turkey</strong>
-              <small>Full Turkey Body</small>
-            </span>
-          </button>
+        <button class="control-btn" id="closeCard" style="margin-left: auto; width: 32px; height: 32px;">✕</button>
+      </div>
+
+      <div class="info-body">
+        <p class="info-desc" id="cardDesc">
+          Horses are powerful, fast, and highly athletic animals built for endurance and movement.
+        </p>
+
+        <div class="stat-grid" id="cardStats">
+          <!-- Stats injected via JS -->
         </div>
       </div>
-      <div class="menu-overlay" id="menuOverlay"></div>
+    </div>
+
+    <!-- Navigation Dock (Bottom) -->
+    <nav class="dock-container glass">
+      <button class="dock-item active" data-model="Horse">
+        <span class="dock-icon">🐎</span>
+        <span class="dock-label">Horse</span>
+      </button>
+      <button class="dock-item" data-model="Cow">
+        <span class="dock-icon">🐄</span>
+        <span class="dock-label">Cow</span>
+      </button>
+      <button class="dock-item" data-model="Cat">
+        <span class="dock-icon">🐱</span>
+        <span class="dock-label">Cat</span>
+      </button>
+      <button class="dock-item" data-model="Turkey">
+        <span class="dock-icon">🦃</span>
+        <span class="dock-label">Turkey</span>
+      </button>
     </nav>
 
     <!-- 3D Canvas Area -->
-    <main class="canvas-area" aria-label="3D model viewer area">
-      <!-- Touch overlay for mobile gestures -->
-      <div class="touch-overlay" id="touchOverlay"></div>
-      
-      <button class="theme-toggle" id="themeToggle" title="Toggle dark mode" aria-label="Toggle dark mode">🌙</button>
+    <main class="canvas-area">
 
-      <model-viewer
-        id="HorseViewer"
-        class="model-viewer active"
-        src="models/Horse.glb"
-        alt="Horse Anatomy"
-        camera-controls
-        disable-tap
-        auto-rotate
-        auto-rotate-delay="2000"
-        rotation-per-second="20deg"
-        camera-orbit="0deg 75deg 105%"
-        field-of-view="45deg"
-        min-camera-orbit="auto auto 50%"
-        max-camera-orbit="auto auto 200%"
-        shadow-intensity="0.8"
-        exposure="1"
-        interpolation-decay="200"
-        interaction-prompt="none"
-        touch-action="pan-y"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        loading="eager"
-        
-      >
+      <!-- Horse Viewer -->
+      <model-viewer id="HorseViewer" class="active" src="models/Horse.glb" alt="Horse Anatomy" camera-controls
+        disable-tap auto-rotate auto-rotate-delay="2000" rotation-per-second="20deg" camera-orbit="0deg 75deg 105%"
+        field-of-view="45deg" min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 200%" shadow-intensity="0"
+        exposure="0.8" interpolation-decay="200" interaction-prompt="none" touch-action="pan-y" ar
+        ar-modes="webxr scene-viewer quick-look" loading="lazy">
+
         <div class="loading-overlay" slot="poster">
           <div class="spinner"></div>
           <p>Loading Horse Model...</p>
-          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Path: models/Horse.glb</p>
         </div>
-        <button class="Hotspot" slot="hotspot-2" data-position="0.23032862228246495m 0.3864580142360037m 0.0015204894422926809m" data-normal="0.0994156283002021m 0.9924895879722052m 0.07128078714800144m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Poll</div></button>
-        <button class="Hotspot" slot="hotspot-3" data-position="0.25809311164363646m 0.3610370000356491m 0.021206258735901963m" data-normal="0.7141789648139188m 0.6237864181621832m 0.31755143006088526m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Forelook</div></button>
-        <button class="Hotspot" slot="hotspot-4" data-position="0.2475314268633561m 0.32692810811288536m 0.05682399301730808m" data-normal="0.10373063820703234m 0.6523445299508649m 0.7507906292305112m" data-visibility-attribute="visible" data-title="Supra Orbital Fossa" data-description="A bony depression above the eye and it has a medical significance in case of the horse it bulges in south africa horse sickness and when appears very deep it indicates senility or emaciation"><div class="HotspotAnnotation">Supra Orbital Fossa</div></button>
-        <button class="Hotspot" slot="hotspot-6" data-position="0.2546677630962968m 0.29727464617019167m 0.05570533523201861m" data-normal="0.35945068596009955m -0.011278631506406431m 0.9330959204895051m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Eye</div></button>
-        <button class="Hotspot" slot="hotspot-7" data-position="0.33055863258953555m 0.18415323148698245m 0.028702413177459047m" data-normal="0.8035471259434877m -0.3730149565102163m 0.4638662076586762m" data-visibility-attribute="visible"  data-title="True Nostril" data-description="A- False Nostril: Like a blind sac or bucket .it doesnot lead to the respiratory passage directly .it storages warms and filtrates the air before going to the lung by its high blood supply."><div class="HotspotAnnotation">False Notrie</div></button>
-        <button class="Hotspot" slot="hotspot-8" data-position="0.3336571412475266m 0.1696274647588112m 0.023568211794737157m" data-normal="0.9024294522349167m 0.10127428525121125m 0.4187655703204891m" data-visibility-attribute="visible"><div class="HotspotAnnotation" data-title="False Nostril" data-description="B : True Nostril: lead to the respiratory passage insertion of the fingerin resulting in annoynance and sneezing by the animal>True Nostrie"></div></button>
-        <button class="Hotspot" slot="hotspot-9" data-position="0.3371649442062117m 0.13800808610279594m -0.0005202441091485199m" data-normal="0.8276361035038067m -0.5457022657290569m 0.13125363749325147m" data-visibility-attribute="visible"><div class="HotspotAnnotation" data-title="Muzzle" data-description="Dry Muscular Movable Sensitive">Muzzle</div></button>
-        <button class="Hotspot" slot="hotspot-10" data-position="0.30701816817267924m 0.2622515436300603m 0.012900294336985425m" data-normal="0.7272040673375585m 0.31227746777124m 0.611274919794763m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Zygomatic ridge</div></button>
-        <button class="Hotspot" slot="hotspot-11" data-position="0.28525180973232467m 0.14595255768925552m 0.002686251064267822m" data-normal="-0.955805436330285m -0.2936352456213343m 0.014639344601861453m" data-visibility-attribute="visible"><div class="HotspotAnnotation">chin</div></button>
-        <button class="Hotspot" slot="hotspot-13" data-position="0.2467735105207321m 0.17328397666186057m -0.0026373277216202168m" data-normal="-0.5394889170078154m -0.8419756789576927m 0.00535392094328025m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Inter mandibular space</div></button>
-        <button class="Hotspot" slot="hotspot-14" data-position="0.18567859196243158m 0.21501429139291162m 0.0008991989928693145m" data-normal="0.016318423161872632m -0.9996914259796102m -0.0187286381876418m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Jowl</div></button>
-        <button class="Hotspot" slot="hotspot-17" data-position="0.06639647035101559m 0.29798056082580093m -0.056199789315845836m" data-normal="-0.13182739515201333m 0.2805110215617995m -0.9507550182196203m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Mane</div></button>
-        <button class="Hotspot" slot="hotspot-19" data-position="0.13666381842430547m 0.2402359354838433m -0.0407892590374303m" data-normal="0.246602777815087m -0.015913758918973477m -0.968985976292202m" data-visibility-attribute="visible" data-title="Jugular Groove" data-description="Two grooves or furrows running down the neck above the trachea found carotid artery jugular and the esophagus in the right side found cartoid artery and jugular vein"><div class="HotspotAnnotation">Jugular Groove</div></button>
-        <button class="Hotspot" slot="hotspot-20" data-position="-0.0986622773556784m 0.23563147474682133m 0.0035314653954317547m" data-normal="-0.1626698049097143m 0.6881294007513629m 0.7071184217598957m" data-visibility-attribute="visible" data-title="Withers" data-description="is the highest part of the trunk at the junction with the neck from withers the height of the horse is measures"><div class="HotspotAnnotation">Withers</div></button>
-        <button class="Hotspot" slot="hotspot-21" data-position="-0.28872795933595274m 0.18289499312929547m 0.010297223428894317m" data-normal="0.19929791495327392m 0.938288378264344m 0.28265749646762456m" data-visibility-attribute="visible"><div class="HotspotAnnotation">(there is saddle region between last rib and wither)</div></button>
-        <button class="Hotspot" slot="hotspot-23" data-position="-0.3910796208998679m 0.17293845869441357m 0.08668832911060378m" data-normal="0.012409114929493517m 0.7514593411938372m 0.6596626959281472m" data-visibility-attribute="visible"><div class="HotspotAnnotation">external angle of the ileum</div></button>
-        <button class="Hotspot" slot="hotspot-24" data-position="-0.5336931864968715m 0.1585525116536739m 0.00025217339085802093m" data-normal="-0.35647635650579357m 0.9324879664102677m 0.05823057403458979m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Dock (root of the tail)</div></button>
-        <button class="Hotspot" slot="hotspot-26" data-position="-0.3565486323796434m 0.12158758877359005m -0.10936631165658237m" data-normal="0.5617588234078975m 0.16261095383227844m -0.811162562016475m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Flank Region</div></button>
-        <button class="Hotspot" slot="hotspot-28" data-position="-0.3637562645028343m -0.022198520942651595m -0.11448364722580251m" data-normal="0.5200258960935865m -0.8190346632304666m 0.24239490056314833m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Groins</div></button>
-        <button class="Hotspot" slot="hotspot-29" data-position="-0.5208896820872848m -0.16274989584168156m 0.06801842491473084m" data-normal="-0.3267860307857395m -0.08980810020925009m 0.9408216596253018m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Achillis Tendon</div></button>
-        <button class="Hotspot" slot="hotspot-30" data-position="-0.5084020270122884m -0.2914334826729039m 0.06401555447069435m" data-normal="0.052887042247431924m -0.1762324448421962m 0.9829267959249359m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Back Tendon</div></button>
-        <button class="Hotspot" slot="hotspot-31" data-position="-0.5645102422549155m -0.3901046504555249m -0.056080857385809785m" data-normal="-0.8757416455892372m -0.25081453421150884m 0.41251501743441876m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Ergot</div></button>
-        <button class="Hotspot" slot="hotspot-32" data-position="-0.41719324667730523m -0.4307164727299531m 0.06372703096328959m" data-normal="0.7157830012547457m 0.6982891205354785m -0.006855600377553261m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Coronet</div></button>
-        <button class="Hotspot" slot="hotspot-33" data-position="0.013024414496522002m -0.4615739420759324m -0.08478090299913409m" data-normal="0.15117368897426212m 0.2987983726294163m -0.9422664422953445m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Hoof</div></button>
-        <button class="Hotspot" slot="hotspot-34" data-position="-0.02291453762188586m -0.3740810646142898m -0.0694842506073384m" data-normal="0.41431068670285826m 0.47104232901408605m -0.7787591278186032m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Fetlock Joint</div></button>
-        <button class="Hotspot" slot="hotspot-36" data-position="0.0021231897316077997m -0.2661291952070646m -0.062078247453308644m" data-normal="0.7929305112074926m -0.384901934554199m -0.4723470177450678m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Knee Joint</div></button>
-        <button class="Hotspot" slot="hotspot-37" data-position="-0.5559571003786103m -0.27160352074829275m -0.06901879935150046m" data-normal="-0.6525598653644571m -0.18206074061720348m -0.7355402836292769m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Hock Joint</div></button>
-        <button class="Hotspot" slot="hotspot-40" data-position="-0.053688303998085884m -0.04929305498328029m -0.11522000967937408m" data-normal="-0.2914575999613685m -0.3845290116052432m -0.8758937758990263m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Elbow Joint</div></button>
-        <button class="Hotspot" slot="hotspot-41" data-position="-0.070452002708011m -0.03683637435132351m -0.0916425840367665m" data-normal="-0.6045961964347376m -0.32624004994430417m -0.7266573257519573m" data-visibility-attribute="visible"><div class="HotspotAnnotation">Axilla</div></button>
+
+        <!-- Horse Hotspots -->
+        <button class="Hotspot" slot="hotspot-2"
+          data-position="0.23032862228246495m 0.3864580142360037m 0.0015204894422926809m"
+          data-normal="0.0994156283002021m 0.9924895879722052m 0.07128078714800144m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Poll</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-3"
+          data-position="0.25809311164363646m 0.3610370000356491m 0.021206258735901963m"
+          data-normal="0.7141789648139188m 0.6237864181621832m 0.31755143006088526m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Forelook</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-4"
+          data-position="0.2475314268633561m 0.32692810811288536m 0.05682399301730808m"
+          data-normal="0.10373063820703234m 0.6523445299508649m 0.7507906292305112m" data-visibility-attribute="visible"
+          data-title="Supra Orbital Fossa"
+          data-description="A bony depression above the eye and it has a medical significance in case of the horse it bulges in south africa horse sickness and when appears very deep it indicates senility or emaciation">
+          <div class="HotspotAnnotation">Supra Orbital Fossa</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-6"
+          data-position="0.2546677630962968m 0.29727464617019167m 0.05570533523201861m"
+          data-normal="0.35945068596009955m -0.011278631506406431m 0.9330959204895051m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Eye</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-7"
+          data-position="0.33055863258953555m 0.18415323148698245m 0.028702413177459047m"
+          data-normal="0.8035471259434877m -0.3730149565102163m 0.4638662076586762m" data-visibility-attribute="visible"
+          data-title="True Nostril"
+          data-description="A- False Nostril: Like a blind sac or bucket .it doesnot lead to the respiratory passage directly .it storages warms and filtrates the air before going to the lung by its high blood supply.">
+          <div class="HotspotAnnotation">False Notrie</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-8"
+          data-position="0.3336571412475266m 0.1696274647588112m 0.023568211794737157m"
+          data-normal="0.9024294522349167m 0.10127428525121125m 0.4187655703204891m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation" data-title="False Nostril"
+            data-description="B : True Nostril: lead to the respiratory passage insertion of the fingerin resulting in annoynance and sneezing by the animal>True Nostrie">
+          </div>
+        </button>
+        <button class="Hotspot" slot="hotspot-9"
+          data-position="0.3371649442062117m 0.13800808610279594m -0.0005202441091485199m"
+          data-normal="0.8276361035038067m -0.5457022657290569m 0.13125363749325147m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation" data-title="Muzzle" data-description="Dry Muscular Movable Sensitive">Muzzle
+          </div>
+        </button>
+        <button class="Hotspot" slot="hotspot-10"
+          data-position="0.30701816817267924m 0.2622515436300603m 0.012900294336985425m"
+          data-normal="0.7272040673375585m 0.31227746777124m 0.611274919794763m" data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Zygomatic ridge</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-11"
+          data-position="0.28525180973232467m 0.14595255768925552m 0.002686251064267822m"
+          data-normal="-0.955805436330285m -0.2936352456213343m 0.014639344601861453m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">chin</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-13"
+          data-position="0.2467735105207321m 0.17328397666186057m -0.0026373277216202168m"
+          data-normal="-0.5394889170078154m -0.8419756789576927m 0.00535392094328025m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Inter mandibular space</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-14"
+          data-position="0.18567859196243158m 0.21501429139291162m 0.0008991989928693145m"
+          data-normal="0.016318423161872632m -0.9996914259796102m -0.0187286381876418m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Jowl</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-17"
+          data-position="0.06639647035101559m 0.29798056082580093m -0.056199789315845836m"
+          data-normal="-0.13182739515201333m 0.2805110215617995m -0.9507550182196203m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Mane</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-19"
+          data-position="0.13666381842430547m 0.2402359354838433m -0.0407892590374303m"
+          data-normal="0.246602777815087m -0.015913758918973477m -0.968985976292202m"
+          data-visibility-attribute="visible" data-title="Jugular Groove"
+          data-description="Two grooves or furrows running down the neck above the trachea found carotid artery jugular and the esophagus in the right side found cartoid artery and jugular vein">
+          <div class="HotspotAnnotation">Jugular Groove</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-20"
+          data-position="-0.0986622773556784m 0.23563147474682133m 0.0035314653954317547m"
+          data-normal="-0.1626698049097143m 0.6881294007513629m 0.7071184217598957m" data-visibility-attribute="visible"
+          data-title="Withers"
+          data-description="is the highest part of the trunk at the junction with the neck from withers the height of the horse is measures">
+          <div class="HotspotAnnotation">Withers</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-21"
+          data-position="-0.28872795933595274m 0.18289499312929547m 0.010297223428894317m"
+          data-normal="0.19929791495327392m 0.938288378264344m 0.28265749646762456m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">(there is saddle region between last rib and wither)</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-23"
+          data-position="-0.3910796208998679m 0.17293845869441357m 0.08668832911060378m"
+          data-normal="0.012409114929493517m 0.7514593411938372m 0.6596626959281472m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">external angle of the ileum</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-24"
+          data-position="-0.5336931864968715m 0.1585525116536739m 0.00025217339085802093m"
+          data-normal="-0.35647635650579357m 0.9324879664102677m 0.05823057403458979m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Dock (root of the tail)</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-26"
+          data-position="-0.3565486323796434m 0.12158758877359005m -0.10936631165658237m"
+          data-normal="0.5617588234078975m 0.16261095383227844m -0.811162562016475m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Flank Region</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-28"
+          data-position="-0.3637562645028343m -0.022198520942651595m -0.11448364722580251m"
+          data-normal="0.5200258960935865m -0.8190346632304666m 0.24239490056314833m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Groins</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-29"
+          data-position="-0.5208896820872848m -0.16274989584168156m 0.06801842491473084m"
+          data-normal="-0.3267860307857395m -0.08980810020925009m 0.9408216596253018m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Achillis Tendon</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-30"
+          data-position="-0.5084020270122884m -0.2914334826729039m 0.06401555447069435m"
+          data-normal="0.052887042247431924m -0.1762324448421962m 0.9829267959249359m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Back Tendon</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-31"
+          data-position="-0.5645102422549155m -0.3901046504555249m -0.056080857385809785m"
+          data-normal="-0.8757416455892372m -0.25081453421150884m 0.41251501743441876m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Ergot</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-32"
+          data-position="-0.41719324667730523m -0.4307164727299531m 0.06372703096328959m"
+          data-normal="0.7157830012547457m 0.6982891205354785m -0.006855600377553261m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Coronet</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-33"
+          data-position="0.013024414496522002m -0.4615739420759324m -0.08478090299913409m"
+          data-normal="0.15117368897426212m 0.2987983726294163m -0.9422664422953445m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Hoof</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-34"
+          data-position="-0.02291453762188586m -0.3740810646142898m -0.0694842506073384m"
+          data-normal="0.41431068670285826m 0.47104232901408605m -0.7787591278186032m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Fetlock Joint</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-36"
+          data-position="0.0021231897316077997m -0.2661291952070646m -0.062078247453308644m"
+          data-normal="0.7929305112074926m -0.384901934554199m -0.4723470177450678m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Knee Joint</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-37"
+          data-position="-0.5559571003786103m -0.27160352074829275m -0.06901879935150046m"
+          data-normal="-0.6525598653644571m -0.18206074061720348m -0.7355402836292769m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Hock Joint</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-40"
+          data-position="-0.053688303998085884m -0.04929305498328029m -0.11522000967937408m"
+          data-normal="-0.2914575999613685m -0.3845290116052432m -0.8758937758990263m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Elbow Joint</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-41"
+          data-position="-0.070452002708011m -0.03683637435132351m -0.0916425840367665m"
+          data-normal="-0.6045961964347376m -0.32624004994430417m -0.7266573257519573m"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Axilla</div>
+        </button>
       </model-viewer>
 
-      <model-viewer
-        id="TurkeyViewer"
-        class="model-viewer"
-        src="models/Turkey.glb"
-        alt="Turkey Anatomy"
-        camera-controls
-        disable-tap
-        auto-rotate
-        auto-rotate-delay="2000"
-        rotation-per-second="20deg"
-        camera-orbit="0deg 75deg 105%"
-        field-of-view="45deg"
-        min-camera-orbit="auto auto 50%"
-        max-camera-orbit="auto auto 200%"
-        shadow-intensity="0.8"
-        exposure="1"
-        interpolation-decay="200"
-        interaction-prompt="none"
-        touch-action="pan-y"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        loading="lazy"
-      >
-        <div class="loading-overlay" slot="poster">
-          <div class="spinner"></div>
-          <p>Loading Turkey Model...</p>
-          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Path: models/Turkey.glb</p>
-        </div>
-        <!-- Example Turkey hotspot (adjust positions/normals as needed) -->
-        <button class="Hotspot" slot="hotspot-1" data-position="0m 0.2m 0m" data-normal="0 1 0" data-visibility-attribute="visible"><div class="HotspotAnnotation">Beak</div></button>
-      </model-viewer>
-
-      <model-viewer
-        id="CowViewer"
-        class="model-viewer"
-        alt="Cow Anatomy"
-        camera-controls
-        disable-tap
-        auto-rotate
-        auto-rotate-delay="2000"
-        rotation-per-second="20deg"
-        camera-orbit="0deg 75deg 105%"
-        field-of-view="45deg"
-        min-camera-orbit="auto auto 50%"
-        max-camera-orbit="auto auto 200%"
-        shadow-intensity="0.8"
-        exposure="1"
-        interpolation-decay="200"
-        interaction-prompt="none"
-        touch-action="pan-y"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        loading="lazy"
-      >
+      <!-- Cow Viewer -->
+      <model-viewer id="CowViewer" src="models/Cow.glb" alt="Cow Anatomy" camera-controls disable-tap auto-rotate
+        auto-rotate-delay="2000" rotation-per-second="20deg" camera-orbit="0deg 75deg 105%" field-of-view="45deg"
+        min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 200%" shadow-intensity="0" exposure="0.8"
+        interpolation-decay="200" interaction-prompt="none" touch-action="pan-y" ar
+        ar-modes="webxr scene-viewer quick-look" loading="lazy">
         <div class="loading-overlay" slot="poster">
           <div class="spinner"></div>
           <p>Loading Cow Model...</p>
-          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Path: models/Cow.glb</p>
         </div>
-        <!-- Cow hotspots -->
-        <button class="Hotspot" slot="hotspot-1" data-position="-0.009784708044450419m 0.38676306177464115m 0.25327984086889155m" data-normal="0.04867448206482512m 0.9980191165058412m 0.039857720514618854m" data-visibility-attribute="visible" data-key="spine" aria-label="Withers"><div class="HotspotAnnotation">Withers</div></button>
-        <button class="Hotspot" slot="hotspot-3" data-position="-0.024130600933417012m 0.37929124079363286m 0.0967437719526747m" data-normal="-0.09262470839829069m 0.9947154905983335m 0.0442917165827711m" data-visibility-attribute="visible" data-key="spine" aria-label="Back"><div class="HotspotAnnotation">Back Region</div></button>
-        <button class="Hotspot" slot="hotspot-4" data-position="-0.19536956417997997m 0.26939555542301963m -0.28816880092487174m" data-normal="-0.8985109481145288m 0.14443513032527894m -0.4145076226636254m" data-visibility-attribute="visible" data-key="torso" aria-label="Flank" data-title="Flank Region" data-description="The flank is more hollowed and clearer in the cow.This is because the Pelvic bone is more prominent in the cattle than in equines.The rumen under the left flank and it has a medical significant in cattle.It becomes hollowed in non-well fed (hunger) animal and in case tympanic in bulges with a tympanic sound when examined."><div class="HotspotAnnotation">Flank Region</div></button>
-        <button class="Hotspot" slot="hotspot-6" data-position="-0.22659075496841874m 0.2884497326687187m -0.43148404513455685m" data-normal="-0.7580155314630457m 0.20592388508130632m -0.618876245798639m" data-visibility-attribute="visible" data-key="pelvis" aria-label="Pelvic Bone"><div class="HotspotAnnotation">Pelvic Bone</div></button>
-        <button class="Hotspot" slot="hotspot-7" data-position="-0.055863170339404716m -0.2762290771272514m -0.7630597429882826m" data-normal="-0.054815743250752044m 0.09539968002041829m -0.9939286369472757m" data-visibility-attribute="visible" data-key="tail" aria-label="Tail Tuft"><div class="HotspotAnnotation">Tail Tuft</div></button>
-        <button class="Hotspot" slot="hotspot-8" data-position="-0.1427810723613323m -0.18754583304978573m -0.4563261697928316m" data-normal="-0.962004141969184m -0.23249547844213392m 0.14315684872927728m" data-visibility-attribute="visible" data-key="torso" aria-label="Udder"><div class="HotspotAnnotation">Udder</div></button>
-        <button class="Hotspot" slot="hotspot-9" data-position="-0.0116694729254605m -0.08581539176301362m 0.4921620611601516m" data-normal="-0.5766450665174879m -0.3485938325131607m 0.7388929605801021m" data-visibility-attribute="visible" data-key="torso" aria-label="Dewlap"><div class="HotspotAnnotation">Dewlap</div></button>
-        <button class="Hotspot" slot="hotspot-10" data-position="0.07283982095923691m -0.6448368252680855m 0.30003135423973726m" data-normal="-0.3357494343933712m 0.5042031508103779m 0.795645335571961m" data-visibility-attribute="visible" data-key="legs" aria-label="Claws"><div class="HotspotAnnotation">2 Claws</div></button>
-        <button class="Hotspot" slot="hotspot-11" data-position="-0.11338203291956994m -0.6027145531651322m 0.20262258138037392m" data-normal="0.09724736677598941m 0.44388155560452736m -0.8907929693532842m" data-visibility-attribute="visible" data-key="legs" aria-label="Dewclaws"><div class="HotspotAnnotation">2 Dewclaws</div></button>
-        <button class="Hotspot" slot="hotspot-12" data-position="0.019576734410272384m 0.16615734283023387m 0.965539843787568m" data-normal="-0.29454409419979444m -0.6350385972250409m 0.7141216679295448m" data-visibility-attribute="visible" data-key="head" aria-label="Muffle" data-title="Muffle" data-description="Wet Fleshy Immovable less sensitive"><div class="HotspotAnnotation">Muffle</div></button>
-        <button class="Hotspot" slot="hotspot-13" data-position="-0.04379508514944319m 0.19845573019700527m 0.9449352410407703m" data-normal="0.6799346593544275m -0.14159339793237988m 0.719472145861493m" data-visibility-attribute="visible" data-key="head" aria-label="Nostrile"><div class="HotspotAnnotation">True Nostrile</div></button>
+        <button class="Hotspot" slot="hotspot-1"
+          data-position="-0.009784708044450419m 0.38676306177464115m 0.25327984086889155m"
+          data-normal="0.04867448206482512m 0.9980191165058412m 0.039857720514618854m"
+          data-visibility-attribute="visible" data-key="spine" aria-label="Withers">
+          <div class="HotspotAnnotation">Withers</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-3"
+          data-position="-0.024130600933417012m 0.37929124079363286m 0.0967437719526747m"
+          data-normal="-0.09262470839829069m 0.9947154905983335m 0.0442917165827711m"
+          data-visibility-attribute="visible" data-key="spine" aria-label="Back">
+          <div class="HotspotAnnotation">Back Region</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-4"
+          data-position="-0.19536956417997997m 0.26939555542301963m -0.28816880092487174m"
+          data-normal="-0.8985109481145288m 0.14443513032527894m -0.4145076226636254m"
+          data-visibility-attribute="visible" data-key="torso" aria-label="Flank" data-title="Flank Region"
+          data-description="The flank is more hollowed and clearer in the cow.This is because the Pelvic bone is more prominent in the cattle than in equines.The rumen under the left flank and it has a medical significant in cattle.It becomes hollowed in non-well fed (hunger) animal and in case tympanic in bulges with a tympanic sound when examined.">
+          <div class="HotspotAnnotation">Flank Region</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-6"
+          data-position="-0.22659075496841874m 0.2884497326687187m -0.43148404513455685m"
+          data-normal="-0.7580155314630457m 0.20592388508130632m -0.618876245798639m"
+          data-visibility-attribute="visible" data-key="pelvis" aria-label="Pelvic Bone">
+          <div class="HotspotAnnotation">Pelvic Bone</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-7"
+          data-position="-0.055863170339404716m -0.2762290771272514m -0.7630597429882826m"
+          data-normal="-0.054815743250752044m 0.09539968002041829m -0.9939286369472757m"
+          data-visibility-attribute="visible" data-key="tail" aria-label="Tail Tuft">
+          <div class="HotspotAnnotation">Tail Tuft</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-8"
+          data-position="-0.1427810723613323m -0.18754583304978573m -0.4563261697928316m"
+          data-normal="-0.962004141969184m -0.23249547844213392m 0.14315684872927728m"
+          data-visibility-attribute="visible" data-key="torso" aria-label="Udder">
+          <div class="HotspotAnnotation">Udder</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-9"
+          data-position="-0.0116694729254605m -0.08581539176301362m 0.4921620611601516m"
+          data-normal="-0.5766450665174879m -0.3485938325131607m 0.7388929605801021m"
+          data-visibility-attribute="visible" data-key="torso" aria-label="Dewlap">
+          <div class="HotspotAnnotation">Dewlap</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-10"
+          data-position="0.07283982095923691m -0.6448368252680855m 0.30003135423973726m"
+          data-normal="-0.3357494343933712m 0.5042031508103779m 0.795645335571961m" data-visibility-attribute="visible"
+          data-key="legs" aria-label="Claws">
+          <div class="HotspotAnnotation">2 Claws</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-11"
+          data-position="-0.11338203291956994m -0.6027145531651322m 0.20262258138037392m"
+          data-normal="0.09724736677598941m 0.44388155560452736m -0.8907929693532842m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Dewclaws">
+          <div class="HotspotAnnotation">2 Dewclaws</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-12"
+          data-position="0.019576734410272384m 0.16615734283023387m 0.965539843787568m"
+          data-normal="-0.29454409419979444m -0.6350385972250409m 0.7141216679295448m"
+          data-visibility-attribute="visible" data-key="head" aria-label="Muffle" data-title="Muffle"
+          data-description="Wet Fleshy Immovable less sensitive">
+          <div class="HotspotAnnotation">Muffle</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-13"
+          data-position="-0.04379508514944319m 0.19845573019700527m 0.9449352410407703m"
+          data-normal="0.6799346593544275m -0.14159339793237988m 0.719472145861493m" data-visibility-attribute="visible"
+          data-key="head" aria-label="Nostrile">
+          <div class="HotspotAnnotation">True Nostrile</div>
+        </button>
       </model-viewer>
 
-      <model-viewer
-        id="CatViewer"
-        class="model-viewer"
-        alt="Cat Anatomy"
-        camera-controls
-        disable-tap
-        auto-rotate
-        auto-rotate-delay="2000"
-        rotation-per-second="20deg"
-        camera-orbit="0deg 75deg 105%"
-        field-of-view="45deg"
-        min-camera-orbit="auto auto 50%"
-        max-camera-orbit="auto auto 200%"
-        shadow-intensity="0.8"
-        exposure="1"
-        interpolation-decay="200"
-        interaction-prompt="none"
-        touch-action="pan-y"
-        ar
-        ar-modes="webxr scene-viewer quick-look"
-        loading="lazy"
-      >
+      <!-- Cat Viewer -->
+      <model-viewer id="CatViewer" src="models/Cat.glb" alt="Cat Anatomy" camera-controls disable-tap auto-rotate
+        auto-rotate-delay="2000" rotation-per-second="20deg" camera-orbit="0deg 75deg 105%" field-of-view="45deg"
+        min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 200%" shadow-intensity="0" exposure="0.8"
+        interpolation-decay="200" interaction-prompt="none" touch-action="pan-y" ar
+        ar-modes="webxr scene-viewer quick-look" loading="lazy">
         <div class="loading-overlay" slot="poster">
           <div class="spinner"></div>
           <p>Loading Cat Model...</p>
-          <p style="font-size: 11px; margin-top: 8px; opacity: 0.7;">Path: models/Cat.glb</p>
         </div>
-        <!-- Cat hotspots -->
-        <button class="Hotspot" slot="hotspot-1" data-position="-0.002442649457025714m 0.5681624826337592m 0.47868129968914386m" data-normal="0.4357806779406648m 0.8519049396635214m 0.2904361797546347m" data-visibility-attribute="visible" data-key="head" aria-label="Head"><div class="HotspotAnnotation">Head</div></button>
-        <button class="Hotspot" slot="hotspot-2" data-position="-0.15756001440870698m 0.5790558204527763m 0.5039374519930631m" data-normal="-0.455583185980472m 0.5827015204636402m 0.6729806079681975m" data-visibility-attribute="visible" data-key="head" aria-label="Ear"><div class="HotspotAnnotation">Ear</div></button>
-        <button class="Hotspot" slot="hotspot-3" data-position="-0.09359087085924542m 0.42016086030836286m 0.6106598065528464m" data-normal="-0.02810857398057332m -0.006255135857867449m 0.9995853046859874m" data-visibility-attribute="visible" data-key="spine" aria-label="Eye"><div class="HotspotAnnotation">Eye</div></button>
-        <button class="Hotspot" slot="hotspot-4" data-position="-0.006939142867120468m 0.33225265042925967m 0.6691955826097118m" data-normal="0.037233267828214456m 0.23335085686766346m 0.9716795054779944m" data-visibility-attribute="visible" data-key="torso" aria-label="Nose"><div class="HotspotAnnotation">Nose</div></button>
-        <button class="Hotspot" slot="hotspot-5" data-position="-0.00530048752079567m 0.27202611275241695m 0.6319445881300099m" data-normal="-0.021120314670637113m -0.4717647138292149m 0.8814714896659178m" data-visibility-attribute="visible" data-key="torso" aria-label="Mouth"><div class="HotspotAnnotation">Mouth</div></button>
-        <button class="Hotspot" slot="hotspot-6" data-position="-0.11566543019226905m -0.32464273660639986m 0.31379224963682084m" data-normal="-0.12392193802242815m -0.04800577377548034m 0.9911300615766748m" data-visibility-attribute="visible" data-key="legs" aria-label="Foreleg"><div class="HotspotAnnotation">Foreleg</div></button>
-        <button class="Hotspot" slot="hotspot-8" data-position="0.028201714610988304m 0.3097029797456661m -0.16234145880400663m" data-normal="0.26028773227915325m 0.9602767844320534m -0.10059221493640257m" data-visibility-attribute="visible" data-key="spine" aria-label="Back"><div class="HotspotAnnotation">Back</div></button>
-        <button class="Hotspot" slot="hotspot-9" data-position="-0.03642897378216725m -0.23646439170622013m -0.7134365385020847m" data-normal="0.08307738459226036m 0.2983373093137639m -0.9508380503748961m" data-visibility-attribute="visible" data-key="tail" aria-label="Tail"><div class="HotspotAnnotation">Tail</div></button>
-        <button class="Hotspot" slot="hotspot-10" data-position="0.12560856880445903m -0.5086653607094593m -0.34412731545996245m" data-normal="0.5190296734391602m 0.5635334937259396m 0.6426804801288702m" data-visibility-attribute="visible" data-key="pelvis" aria-label="Toe"><div class="HotspotAnnotation">Toe</div></button>
-        <button class="Hotspot" slot="hotspot-11" data-position="0.005357341158241269m -0.2262080178650363m -0.06899773842869183m" data-normal="0.16921415668240836m -0.9569503753134262m 0.23582312941218067m" data-visibility-attribute="visible" data-key="legs" aria-label="Belly"><div class="HotspotAnnotation">Belly</div></button>
-        <button class="Hotspot" slot="hotspot-12" data-position="0.06747237045017063m -0.5415447109661307m 0.34127305057669055m" data-normal="-0.006100294747230076m 0.1620668060666863m 0.9867609319259353m" data-visibility-attribute="visible" data-key="legs" aria-label="Paw"><div class="HotspotAnnotation">Paw</div></button>
-        <button class="Hotspot" slot="hotspot-13" data-position="0.000013686304384988301m -0.06740979196781138m 0.425949692618798m" data-normal="0.016439235702518828m -0.568675533177832m 0.822397646819606m" data-visibility-attribute="visible" data-key="torso" aria-label="Chest"><div class="HotspotAnnotation">Chest</div></button>
-        <button class="Hotspot" slot="hotspot-14" data-position="-0.04116550291123211m 0.17200969862773846m 0.48820170382249584m" data-normal="-0.4641657838108466m -0.189009662453304m 0.8653470244003562m" data-visibility-attribute="visible" data-key="torso" aria-label="Neck"><div class="HotspotAnnotation">Neck</div></button>
-        <button class="Hotspot" slot="hotspot-15" data-position="0.19661235919788655m -0.05353081724922934m 0.2010117487644676m" data-normal="0.9363237333165457m -0.327624267882853m 0.126333706992199m" data-visibility-attribute="visible" data-key="legs" aria-label="Shoulder"><div class="HotspotAnnotation">Shoulder</div></button>
-        <button class="Hotspot" slot="hotspot-16" data-position="0.18767649863911862m -0.09932904916268964m -0.4090808878263599m" data-normal="0.9639556081771452m -0.16936493248316667m -0.2051952852986702m" data-visibility-attribute="visible" data-key="spine" aria-label="Thigh"><div class="HotspotAnnotation">Thigh</div></button>
-        <button class="Hotspot" slot="hotspot-17" data-position="-0.08854113545962386m -0.5698543819724686m 0.3520510466001777m" data-normal="0.0355201544097415m -0.9986936136187723m 0.03673397266545785m" data-visibility-attribute="visible" data-key="legs" aria-label="Metacar pal pad"><div class="HotspotAnnotation">Metacar pal pad</div></button>
-        <button class="Hotspot" slot="hotspot-18" data-position="-0.0894288412284089m -0.5697049413590105m 0.30532654975082235m" data-normal="0.014739218197763226m -0.9998023944167094m -0.013338949191508657m" data-visibility-attribute="visible" data-key="legs" aria-label="Carpal Pad"><div class="HotspotAnnotation">Carpal Pad</div></button>
+        <button class="Hotspot" slot="hotspot-1"
+          data-position="-0.002442649457025714m 0.5681624826337592m 0.47868129968914386m"
+          data-normal="0.4357806779406648m 0.8519049396635214m 0.2904361797546347m" data-visibility-attribute="visible"
+          data-key="head" aria-label="Head">
+          <div class="HotspotAnnotation">Head</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-2"
+          data-position="-0.15756001440870698m 0.5790558204527763m 0.5039374519930631m"
+          data-normal="-0.455583185980472m 0.5827015204636402m 0.6729806079681975m" data-visibility-attribute="visible"
+          data-key="head" aria-label="Ear">
+          <div class="HotspotAnnotation">Ear</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-3"
+          data-position="-0.09359087085924542m 0.42016086030836286m 0.6106598065528464m"
+          data-normal="-0.02810857398057332m -0.006255135857867449m 0.9995853046859874m"
+          data-visibility-attribute="visible" data-key="spine" aria-label="Eye">
+          <div class="HotspotAnnotation">Eye</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-4"
+          data-position="-0.006939142867120468m 0.33225265042925967m 0.6691955826097118m"
+          data-normal="0.037233267828214456m 0.23335085686766346m 0.9716795054779944m"
+          data-visibility-attribute="visible" data-key="torso" aria-label="Nose">
+          <div class="HotspotAnnotation">Nose</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-5"
+          data-position="-0.00530048752079567m 0.27202611275241695m 0.6319445881300099m"
+          data-normal="-0.021120314670637113m -0.4717647138292149m 0.8814714896659178m"
+          data-visibility-attribute="visible" data-key="torso" aria-label="Mouth">
+          <div class="HotspotAnnotation">Mouth</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-6"
+          data-position="-0.11566543019226905m -0.32464273660639986m 0.31379224963682084m"
+          data-normal="-0.12392193802242815m -0.04800577377548034m 0.9911300615766748m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Foreleg">
+          <div class="HotspotAnnotation">Foreleg</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-8"
+          data-position="0.028201714610988304m 0.3097029797456661m -0.16234145880400663m"
+          data-normal="0.26028773227915325m 0.9602767844320534m -0.10059221493640257m"
+          data-visibility-attribute="visible" data-key="spine" aria-label="Back">
+          <div class="HotspotAnnotation">Back</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-9"
+          data-position="-0.03642897378216725m -0.23646439170622013m -0.7134365385020847m"
+          data-normal="0.08307738459226036m 0.2983373093137639m -0.9508380503748961m"
+          data-visibility-attribute="visible" data-key="tail" aria-label="Tail">
+          <div class="HotspotAnnotation">Tail</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-10"
+          data-position="0.12560856880445903m -0.5086653607094593m -0.34412731545996245m"
+          data-normal="0.5190296734391602m 0.5635334937259396m 0.6426804801288702m" data-visibility-attribute="visible"
+          data-key="pelvis" aria-label="Toe">
+          <div class="HotspotAnnotation">Toe</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-11"
+          data-position="0.005357341158241269m -0.2262080178650363m -0.06899773842869183m"
+          data-normal="0.16921415668240836m -0.9569503753134262m 0.23582312941218067m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Belly">
+          <div class="HotspotAnnotation">Belly</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-12"
+          data-position="0.06747237045017063m -0.5415447109661307m 0.34127305057669055m"
+          data-normal="-0.006100294747230076m 0.1620668060666863m 0.9867609319259353m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Paw">
+          <div class="HotspotAnnotation">Paw</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-13"
+          data-position="0.000013686304384988301m -0.06740979196781138m 0.425949692618798m"
+          data-normal="0.016439235702518828m -0.568675533177832m 0.822397646819606m" data-visibility-attribute="visible"
+          data-key="torso" aria-label="Chest">
+          <div class="HotspotAnnotation">Chest</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-14"
+          data-position="-0.04116550291123211m 0.17200969862773846m 0.48820170382249584m"
+          data-normal="-0.4641657838108466m -0.189009662453304m 0.8653470244003562m" data-visibility-attribute="visible"
+          data-key="torso" aria-label="Neck">
+          <div class="HotspotAnnotation">Neck</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-15"
+          data-position="0.19661235919788655m -0.05353081724922934m 0.2010117487644676m"
+          data-normal="0.9363237333165457m -0.327624267882853m 0.126333706992199m" data-visibility-attribute="visible"
+          data-key="legs" aria-label="Shoulder">
+          <div class="HotspotAnnotation">Shoulder</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-16"
+          data-position="0.18767649863911862m -0.09932904916268964m -0.4090808878263599m"
+          data-normal="0.9639556081771452m -0.16936493248316667m -0.2051952852986702m"
+          data-visibility-attribute="visible" data-key="spine" aria-label="Thigh">
+          <div class="HotspotAnnotation">Thigh</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-17"
+          data-position="-0.08854113545962386m -0.5698543819724686m 0.3520510466001777m"
+          data-normal="0.0355201544097415m -0.9986936136187723m 0.03673397266545785m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Metacar pal pad">
+          <div class="HotspotAnnotation">Metacar pal pad</div>
+        </button>
+        <button class="Hotspot" slot="hotspot-18"
+          data-position="-0.0894288412284089m -0.5697049413590105m 0.30532654975082235m"
+          data-normal="0.014739218197763226m -0.9998023944167094m -0.013338949191508657m"
+          data-visibility-attribute="visible" data-key="legs" aria-label="Carpal Pad">
+          <div class="HotspotAnnotation">Carpal Pad</div>
+        </button>
       </model-viewer>
 
-      <div class="controls-overlay" aria-label="View controls">
-        <button class="control-btn" id="autoRotateToggle" title="Toggle auto-rotate" aria-label="Toggle auto-rotate">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/>
-          </svg>
+      <!-- Turkey Viewer -->
+      <model-viewer id="TurkeyViewer" src="models/Turkey.glb" alt="Turkey Anatomy" camera-controls disable-tap
+        auto-rotate auto-rotate-delay="2000" rotation-per-second="20deg" camera-orbit="0deg 75deg 105%"
+        field-of-view="45deg" min-camera-orbit="auto auto 50%" max-camera-orbit="auto auto 200%" shadow-intensity="0"
+        exposure="0.8" interpolation-decay="200" interaction-prompt="none" touch-action="pan-y" ar
+        ar-modes="webxr scene-viewer quick-look" loading="lazy">
+        <div class="loading-overlay" slot="poster">
+          <div class="spinner"></div>
+          <p>Loading Turkey Model...</p>
+        </div>
+        <!-- Turkey hotspots -->
+        <button class="Hotspot" slot="hotspot-1" data-position="0m 0.2m 0m" data-normal="0 1 0"
+          data-visibility-attribute="visible">
+          <div class="HotspotAnnotation">Beak</div>
         </button>
-        <button class="control-btn" id="resetView" title="Reset view" aria-label="Reset view">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/>
-            <path d="M21 3v5h-5"/>
-          </svg>
-        </button>
-        <button class="control-btn" id="zoomIn" title="Zoom in" aria-label="Zoom in">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-            <line x1="11" y1="8" x2="11" y2="14"/>
-            <line x1="8" y1="11" x2="14" y2="11"/>
-          </svg>
-        </button>
-        <button class="control-btn" id="zoomOut" title="Zoom out" aria-label="Zoom out">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"/>
-            <path d="m21 21-4.35-4.35"/>
-            <line x1="8" y1="11" x2="14" y2="11"/>
-          </svg>
-        </button>
-        <button class="control-btn" id="arButton" title="View in AR" aria-label="View in AR">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="2" y="7" width="20" height="14" rx="2"/>
-            <path d="M16 3h5v5"/>
-            <path d="M21 3l-7 7"/>
-          </svg>
-        </button>
-        <!-- New: Hotspots toggle -->
-        <button class="control-btn" id="hotspotsToggle" title="Toggle hotspots" aria-label="Toggle hotspots">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
-            <circle cx="12" cy="12" r="3"/>
-          </svg>
-        </button>
-      </div>
+      </model-viewer>
 
-      <div class="interaction-hints" id="interactionHints" aria-hidden="true">
-        <div class="hint-item">
-          <div class="hint-icon">🖱️</div>
-          <div class="hint-text">Drag to rotate</div>
-        </div>
-        <div class="hint-item">
-          <div class="hint-icon">🔍</div>
-          <div class="hint-text">Scroll to zoom</div>
-        </div>
-        <div class="hint-item">
-          <div class="hint-icon">👆</div>
-          <div class="hint-text">Two fingers to pan</div>
-        </div>
-      </div>
-
-      <div class="instructions" aria-hidden="true">
-        <span>🖱️ Drag to Rotate</span>
-        <span>🔍 Pinch to Zoom</span>
-        <span>📱 AR Support</span>
-        <span>👆 Tap for info</span>
-      </div>
-     <!--  Info Drawer -->
-      <section class="info-drawer" id="infoDrawer" aria-live="polite">
-        <div class="drawer-handle"></div>
-        <div class="drawer-header">
-          <span class="drawer-icon" id="drawerIcon">🔍</span>
-          <span class="drawer-title" id="drawerTitle">Part</span>
-          <span class="drawer-category" id="drawerCategory">Anatomy</span>
-          <button class="drawer-close" id="drawerClose" title="Close details">✕</button>
-        </div>
-        <div class="drawer-tabs" role="tablist">
-          <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
-          <button class="tab-btn" data-tab="details" role="tab" aria-selected="false">Details</button>
-          <button class="tab-btn" data-tab="media" role="tab" aria-selected="false">Media</button>
-        </div>
-        <div class="drawer-body">
-          <div id="tab-overview">
-            <p class="drawer-desc" id="drawerDesc">Select a visualization mode to explore cat anatomy in 3D.</p>
-          </div>
-          <div id="tab-details" style="display:none;">
-            <div class="detail-grid" id="drawerDetails"></div>
-          </div>
-          <div id="tab-media" style="display:none;">
-            <div class="media-grid" id="drawerMedia">
-              <div class="media-item">No media yet</div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
-  </div> <!---->
 
-<script src="script.js"></script>
+  </div>
+
+  <script src="script.js"></script>
 </body>
+
 </html>
