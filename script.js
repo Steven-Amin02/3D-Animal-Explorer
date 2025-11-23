@@ -1,3 +1,16 @@
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then((registration) => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      })
+      .catch((err) => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
+
 // ===============================
 // Anatomy Data
 // ===============================
@@ -266,9 +279,6 @@ function setupModelInteractions() {
 
         // Manually update card since it's dynamic data not in anatomyData
         updateInfoCardWithData(data)
-      } else {
-        // Background click - maybe close card?
-        // closeInfoCard()
       }
     })
   })
@@ -285,22 +295,15 @@ function updateInfoCardWithData(data) {
 }
 
 // ===============================
-// Mobile Touch Gestures - DISABLED
+// Mobile Touch Gestures
 // ===============================
-// Swipe gestures disabled to prevent accidental model switching
-// Users should use the dock buttons to switch models
-
 // Prevent pull-to-refresh on mobile
 document.body.addEventListener('touchmove', (e) => {
   if (e.touches.length > 1) {
-    // Allow pinch-to-zoom
-    return
+    return // Allow pinch-to-zoom
   }
-
-  // Prevent pull-to-refresh only at the top of the page
   const target = e.target
   const isScrollable = target.closest('.info-card')
-
   if (!isScrollable && window.scrollY === 0) {
     e.preventDefault()
   }
