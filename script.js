@@ -99,6 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
   init()
 })
 
+
+
 function init() {
   viewers = {
     Horse: document.getElementById("HorseViewer"),
@@ -109,6 +111,14 @@ function init() {
 
   setupEventListeners()
   setupModelInteractions()
+
+  // Initialize models based on device
+  // OPTIMIZATION: Only initialize the current model to reduce main thread blocking (INP)
+  // The other models will be initialized on demand in switchState
+  const activeViewer = viewers[currentState]
+  if (activeViewer) {
+    activeViewer.src = getModelSrc(currentState)
+  }
 
   // Initial Info
   updateInfoCard('overview')
@@ -137,11 +147,32 @@ function setupEventListeners() {
 
   // Info Card
   document.getElementById("closeCard").addEventListener("click", closeInfoCard)
+
+  // Handle resize to switch models if crossing breakpoint
+  let lastWidth = window.innerWidth
+  window.addEventListener('resize', () => {
+    if (window.innerWidth !== lastWidth) {
+      lastWidth = window.innerWidth
+      // Optional: Reload current model if device type changes
+      // const newSrc = getModelSrc(currentState)
+      // if (viewers[currentState].src !== newSrc) {
+      //   viewers[currentState].src = newSrc
+      // }
+    }
+  })
 }
 
 // ===============================
 // Logic
 // ===============================
+function getModelSrc(modelName) {
+  const isMobile = window.innerWidth < 768
+  // UNCOMMENT the line below when you have uploaded 'Horse_mobile.glb', etc.
+  return isMobile ? `models/${modelName}_mobile.glb` : `models/${modelName}.glb`
+
+  // return `models/${modelName}.glb`
+}
+
 function switchState(newState) {
   if (currentState === newState) return
 
@@ -155,6 +186,13 @@ function switchState(newState) {
     if (key === newState) {
       viewer.classList.add("active")
       viewer.autoRotate = isAutoRotating
+
+      // Ensure correct source is loaded (Deferred Loading)
+      const src = getModelSrc(key)
+      // Check if src needs update (handling absolute vs relative paths)
+      if (!viewer.src || !viewer.src.endsWith(src)) {
+        viewer.src = src
+      }
 
       // Ensure hotspots state matches
       const hotspots = viewer.querySelectorAll('.Hotspot')
