@@ -2,7 +2,7 @@
 
 **A high-performance, mobile-first interactive 3D anatomy explorer.**
 
-![Project Banner](https://via.placeholder.com/1200x400?text=3D+Animal+Explorer)
+![Project Banner](assets/banner.png)
 
 ## 📖 Overview
 
