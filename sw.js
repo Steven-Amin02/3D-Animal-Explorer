@@ -1,4 +1,4 @@
-const CACHE_NAME = 'animal-explorer-v1';
+const CACHE_NAME = 'animal-explorer-v2';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
